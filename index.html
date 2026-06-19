@@ -1,30 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAYANT TOOLZZ Login</title>
     <style>
-        /* ... Keep your existing CSS ... */
-        .search-bar { margin: 20px 0; width: 300px; padding: 12px; border-radius: 20px; border: 1px solid #333; background: #1a1a1a; color: white; text-align: center; }
-        .card { position: relative; }
-        .actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; opacity: 0; transition: 0.3s; }
-        .card:hover .actions { opacity: 1; }
-        .action-btn { background: none; border: none; cursor: pointer; color: white; font-size: 14px; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap');
+        body { background: #0a0a0a; color: #fff; font-family: 'Poppins', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
+        /* Login Screen (Dark Blue Theme) */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(10, 10, 20, 0.9); z-index: 100; backdrop-filter: blur(10px); }
+        .login-box { text-align: center; padding: 40px; border-radius: 20px; border: 1px solid #001f3f; box-shadow: 0 0 20px rgba(0, 31, 63, 0.8); }
+        .blue-gradient-text { font-size: 2rem; margin-bottom: 20px; background: linear-gradient(90deg, #00d4ff, #005f73, #0a9396); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        input { display: block; width: 250px; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid #005f73; background: #050505; color: white; text-align: center; }
+        button { padding: 10px 30px; border-radius: 10px; border: none; background: #005f73; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #0a9396; box-shadow: 0 0 15px #0a9396; }
+
+        /* Dashboard Screen */
+        #dashboard { display: none; padding: 40px; width: 100%; max-width: 900px; }
+        h1 { font-size: 3rem; letter-spacing: 3px; background: linear-gradient(90deg, #00d4ff, #ff007a, #7000ff, #00d4ff); background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: flow 5s linear infinite; text-align: center; }
+        @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+        
+        .search-bar { width: 100%; max-width: 400px; padding: 15px; margin: 0 auto 30px auto; display: block; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .card { position: relative; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s; text-align: center; }
+        .card:hover { transform: translateY(-10px); border-color: #ff007a; }
+        
+        .actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
+        .action-btn { background: rgba(0,0,0,0.3); border: none; cursor: pointer; padding: 5px; border-radius: 5px; font-size: 14px; transition: 0.2s; }
+        .action-btn:hover { background: #ff007a; }
+
+        #add-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: #ff007a; color: white; font-size: 30px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; line-height: 0; box-shadow: 0 4px 15px rgba(255, 0, 122, 0.4); }
     </style>
 </head>
 <body>
 
-    <h1>MY TOOLS</h1>
-    
-    <input type="text" id="search" class="search-bar" placeholder="Search projects..." oninput="renderProjects()">
+    <div id="login-screen">
+        <h2 class="blue-gradient-text">JAYANT TOOLZZ</h2>
+        <input type="password" id="pass" placeholder="Enter Password">
+        <button onclick="checkLogin()">LOGIN</button>
+    </div>
 
-    <div class="grid" id="project-grid"></div>
-    <button id="add-btn" onclick="addProject()">+</button>
+    <div id="dashboard">
+        <h1>MY TOOLS</h1>
+        <input type="text" id="search" class="search-bar" placeholder="🔍 Search projects..." oninput="renderProjects()">
+        <div class="grid" id="project-grid"></div>
+        <button id="add-btn" onclick="addProject()">+</button>
+    </div>
 
     <script>
-        const grid = document.getElementById('project-grid');
         let projects = JSON.parse(localStorage.getItem('myProjects')) || [];
+
+        function checkLogin() {
+            if (document.getElementById('pass').value === "jayant'stools") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                renderProjects();
+            } else { alert("Incorrect Password!"); }
+        }
 
         function renderProjects() {
             const query = document.getElementById('search').value.toLowerCase();
+            const grid = document.getElementById('project-grid');
             grid.innerHTML = '';
             
             projects.forEach((p, i) => {
@@ -45,6 +82,16 @@
             });
         }
 
+        function addProject() {
+            const name = prompt("Project Name:");
+            const url = prompt("Project URL:");
+            if (name && url) {
+                projects.push({ name, url });
+                localStorage.setItem('myProjects', JSON.stringify(projects));
+                renderProjects();
+            }
+        }
+
         function editProject(i) {
             const newName = prompt("Enter new name:", projects[i].name);
             if (newName) {
@@ -61,8 +108,6 @@
                 renderProjects();
             }
         }
-
-        // ... Keep your existing addProject() and login functions ...
     </script>
 </body>
 </html>
