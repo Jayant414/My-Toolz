@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap');
         body { background: #0a0a0a; color: #fff; font-family: 'Poppins', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
-        /* Login Screen (Dark Blue Theme) */
+        /* Login Screen (Same as before) */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(10, 10, 20, 0.9); z-index: 100; backdrop-filter: blur(10px); }
         .login-box { text-align: center; padding: 40px; border-radius: 20px; border: 1px solid #001f3f; box-shadow: 0 0 20px rgba(0, 31, 63, 0.8); }
         .blue-gradient-text { font-size: 2rem; margin-bottom: 20px; background: linear-gradient(90deg, #00d4ff, #005f73, #0a9396); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -23,13 +23,12 @@
         
         .search-bar { width: 100%; max-width: 400px; padding: 15px; margin: 0 auto 30px auto; display: block; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; text-align: center; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-        .card { position: relative; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s; text-align: center; }
+        .card { position: relative; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s; text-align: center; }
         .card:hover { transform: translateY(-10px); border-color: #ff007a; }
         
+        .card p { font-size: 0.85rem; color: #ccc; margin-top: 10px; }
         .actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
-        .action-btn { background: rgba(0,0,0,0.3); border: none; cursor: pointer; padding: 5px; border-radius: 5px; font-size: 14px; transition: 0.2s; }
-        .action-btn:hover { background: #ff007a; }
-
+        .action-btn { background: rgba(0,0,0,0.3); border: none; cursor: pointer; padding: 5px; border-radius: 5px; font-size: 14px; }
         #add-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: #ff007a; color: white; font-size: 30px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; line-height: 0; box-shadow: 0 4px 15px rgba(255, 0, 122, 0.4); }
     </style>
 </head>
@@ -75,6 +74,7 @@
                         </div>
                         <a href="${p.url}" target="_blank" style="text-decoration:none; color:white;">
                             <h3>${p.name}</h3>
+                            <p>${p.description || "No description"}</p>
                         </a>
                     `;
                     grid.appendChild(card);
@@ -83,19 +83,23 @@
         }
 
         function addProject() {
-            const name = prompt("Project Name:");
-            const url = prompt("Project URL:");
+            const name = prompt("Name:");
+            const url = prompt("URL:");
+            const description = prompt("Description:");
             if (name && url) {
-                projects.push({ name, url });
+                projects.push({ name, url, description });
                 localStorage.setItem('myProjects', JSON.stringify(projects));
                 renderProjects();
             }
         }
 
         function editProject(i) {
-            const newName = prompt("Enter new name:", projects[i].name);
-            if (newName) {
-                projects[i].name = newName;
+            const p = projects[i];
+            const newName = prompt("Edit Name:", p.name);
+            const newUrl = prompt("Edit URL:", p.url);
+            const newDesc = prompt("Edit Description:", p.description);
+            if (newName && newUrl) {
+                projects[i] = { name: newName, url: newUrl, description: newDesc };
                 localStorage.setItem('myProjects', JSON.stringify(projects));
                 renderProjects();
             }
